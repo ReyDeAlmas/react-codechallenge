@@ -1,36 +1,60 @@
 
+import useSWR from "swr";
 import Song from "../components/Song"
 import usePlaylist from "../hooks/usePlaylist"
+import { useEffect } from "react";
+import clienteAxios from "../../config/axios";
+
 
 export default function Home() {
+
+    
+
+    const fetcher = () => clienteAxios("/tracks/top").then(data =>
+       data.data
+    );
+    const {data, error, isLoading } = useSWR ("/tracks/top", fetcher);
+
    
-  const { hola } = usePlaylist()
-  console.log(hola)
+    
+      if(isLoading) return(
+        <div className=" animate-pulse h-40 flex items-center text-center w-full container mx-auto">
+            <p className="text-2xl font-bold text-center w-full italic">Cargando las <em className="text-cyan-500"> pistas...</em></p>
+        </div>
+      );
+    
+      
+
+
+    
+
+      const tracks = data;
+    
+
+    
 
   return (
-    <div className="w-full my-2 container mx-auto">
-       <div className="w-full my-2 grid md:grid-cols-6 gap-3">
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Tendencias
-            </button>
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Rock
-            </button>
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Pop
-            </button>
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Regge
-            </button>
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Cumbia
-            </button>
-            <button type='button' className=" hover:bg-green-200 active:scale-95 border-2 border-transparent hover:border-slate-200 transition-all duration-100 rounded-md shadow-md bg-gradient-to-b from-green-400 via-green-400 to-green-300 px-4 py-2 text-green-800 font-semibold flex flex-col items-center justify-center"> 
-                Top Mexico
-            </button>
-        </div>
+    <div className="w-full my-2 container mx-auto bg-slate-100">
+        <div className="w-full  px-2 py-2 grid md:grid-cols-2 gap-1 ">
+            {tracks && tracks.length > 0 ? (
+            tracks.map((track) => (
+            <Song
+                
+                key={track.id}
+                track={track}
+                isPlayList={false}
+                
+            />
+            ))
+        ) : (
+            <p>No hay pistas disponibles</p>
+        )}
 
-        <Song />
+    </div>
+        
+        
+       
+       
 
    
     </div>

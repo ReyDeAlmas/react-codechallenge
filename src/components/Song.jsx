@@ -1,26 +1,53 @@
 
-export default function Song() {
+import minuteSeconds from "../tools/general"
+import { useState } from "react";
+import usePlaylist from "../hooks/usePlaylist";
+
+
+export default function Song({track, isPlayList}) {
+
+  
+  const { id, title, duration, link, album,artist,img, added} = track
+  const likeable = added ? added : isPlayList;
+  const [like, setLike] = useState(added);
+  const {addTrack} = usePlaylist();
+ 
+  const handleClickLike = () => {
+    setLike(!like);
+    addTrack(track, like);
+
+
+    
+
+  }
+
+
   return (
-    <div className="w-full  px-2 py-2 grid md:grid-cols-2 gap-1">
-    <div className="w-full grid md:grid-cols-5">
-      <div className="w-full py-2 bg-slate-200 md:col-span-2">
+    
+    <div  className="w-full grid grid-cols-8 gap-4 px-2 py-1 rounded-md shadow-md bg-white" >
+        <div className="w-full py-2  col-span-2">
+            <img className=" object-cover rounded-md " src={`${img}`} alt="" />
+        </div>
+        <div className="w-full py-2 col-span-6  px-3  flex gap-1 justify-between ">
+            <div className="flex items-star flex-col w-full">
+              <h2 className=" text-2xl font-semibold">{title}</h2>
+              <span>{artist}</span>
+              <span className=" font-light">{minuteSeconds(duration)}</span>
+            </div>
+            
+          <svg
+          onClick={() => {
 
-      </div>
-      <div className="w-full py-2 md:col-span-3  px-3  flex gap-1 justify-between ">
-          <div className="flex items-star flex-col">
-            <h2 className=" text-2xl font-semibold">Nombre de la cancion</h2>
-            <span>Nombre de la banda</span>
-            <span className=" font-light">Genero:</span>
-          </div>
-          <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-heart-plus " width="32" height="32" viewBox="0 0 24 24"  stroke="red" fill="none" >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-          <path d="M12 20l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.96 6.053" />
-          <path d="M16 19h6" />
-          <path d="M19 16v6" />
-        </svg>
-    </div>
+            handleClickLike();
+          }}
+          xmlns="http://www.w3.org/2000/svg" className={` cursor-pointer active:scale-95  hover:scale-105 transition-all duration-100 icon icon-tabler icon-tabler-heart-plus stroke-red-500 ${like ? 'fill-red-500 active:fill-none' : 'active:fill-red-500 fill-none'}`}  width="32" height="32" viewBox="0 0 24 24" >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+          </svg>
+
+          
+        </div>
 
     </div>
-</div>
   )
 }

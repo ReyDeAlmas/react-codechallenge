@@ -1,10 +1,27 @@
-
 import { Outlet } from "react-router-dom"
+import Modal from "react-modal"
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
+import usePlaylist from "../hooks/usePlaylist";
+import Song from "../components/Song";
 
+const customStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+  },
+}
 
 export default function Layout() {
+
+  const {modal, handleClickModal,playList} =  usePlaylist(); 
+
   return (
-    <div>
+    <div id="layout_id">
        
         <div className=" w-full  min-h-72 gradient-animation flex justify-center items-center flex-col">
               <div className="w-full flex gap-1 justify-center">
@@ -18,11 +35,52 @@ export default function Layout() {
               </svg>
                             </div>
               <span className=" text-lg md:text-xl">Construye tu playlist a tu manera</span>
+              <button onClick={()=>{
+                handleClickModal()
+               
+              }} 
+              className="px-12   my-2 py-4 bg-lime-400 shadow-md rounded-md hover:bg-cyan-400 active:scale-95">
+                  Mi playlist
+              </button>
         </div>
 
      
 
         <Outlet></Outlet>
+
+        <ToastContainer/>
+
+        {modal && (
+          <Modal  isOpen={modal} style={customStyles} appElement={document.getElementById('layout_id')}>
+            <div className=" w-full max-w-2xl min-w-[60vw]  py-2 relative">
+              <div className=" w-full my-1 flex justify-end border-b-2 border-slate-400">
+                  <button
+                  type="button"
+                  onClick={()=>{
+                    handleClickModal()
+                   
+                  }} 
+                  className=" text-lime-400 font-bold cursor-pointer hover:underline active:scale-95">Cerrar (X)</button>
+              </div>
+            </div>
+            <div className="w-full my-2 container mx-auto bg-slate-100 grid md:grid-cols-2 px-2 gap-2 py-3">
+            {playList && playList.length > 0 ? (
+                  playList.map((track) => (
+                  <Song
+                      
+                      key={track.id}
+                      track={track}
+                      isPlayList={true}
+                      
+                  />
+                  ))
+              ) : (
+                  <p>No hay pistas disponibles</p>
+              )}
+            </div>
+          </Modal>
+        )}
+       
         
 
     </div>
